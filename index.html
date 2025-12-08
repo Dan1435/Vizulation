@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vizulation - 30 Puzzles, 6 Weeks, Mon-Fri, Mind Tweaks">
+  <meta name="author" content="Dan">
+<link rel="icon" href="favicon.ico" type="image/ico">
+  <title>Vizulation - 30 Puzzles, 6 Weeks, Mon-Fri, Mind Tweaks</title>
+
+  <style>
+    /* --- GENERAL STYLES --- */
+    body {
+      background-color: #026B9D;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+    .topnav {
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-size {
+      width: 45px;
+      height: 45px;
+    }
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .BG {
+      margin-top: 153px;
+    }
+    .boundaries {
+      margin-top: 20px;
+      position: relative;
+    }
+
+    /* --- CUSTOM FONT LOADING (Zerove) --- */
+    /* Paths are relative to the root, since the CSS is inline in index.html */
+    
+    @font-face {
+      font-family: 'Zerove'; 
+      src: url('fonts/Zerove-Regular.ttf') format('truetype'); 
+      font-weight: normal; 
+      font-style: normal; 
+      font-display: swap; 
+    }
+
+    @font-face {
+      font-family: 'Zerove'; 
+      src: url('fonts/Zerove-Italic.ttf') format('truetype'); 
+      font-weight: normal; 
+      font-style: italic; 
+      font-display: swap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="topnav">
+      <a href="index.html">
+        <img src="images/VizulationLogoTagline.png" alt="logo" class="logo-size">
+      </a>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <div class="boundaries">
+      <img src="images/Game_Boundaries.png" alt="Border" class="main-logo">
+    </div>
+
+        <div id="game-container">
+    </div>
+  </main>
+
+        <script>
+    // --- 1. Puzzle Schedule Map (All dates are for 2026) ---
+    const PUZZLE_SCHEDULE = {
+        // Week 1 (Jan 5 - Jan 9)
+        '1-5': 'Calculator', '1-6': 'Fireworks', '1-7': 'Birds2', '1-8': 'PhoneCall2', '1-9': 'WeightMeasure',
+        // Weekend 1 
+        '1-10': 'WeekendScreen', '1-11': 'WeekendScreen',
+        // Week 2 (Jan 12 - Jan 16)
+        '1-12': 'PiggyBank', '1-13': 'BasketballShooting', '1-14': '3inaRow', '1-15': 'Map', '1-16': 'NumberedCards2',
+        // Weekend 2
+        '1-17': 'WeekendScreen', '1-18': 'WeekendScreen',
+        // Week 3 (Jan 19 - Jan 23)
+        '1-19': 'Fireworks3', '1-20': 'Calculator2', '1-21': 'PenguinSliding', '1-22': 'Racing2', '1-23': 'CheckersBoard',
+        // Weekend 3
+        '1-24': 'WeekendScreen', '1-25': 'WeekendScreen',
+        // Week 4 (Jan 26 - Jan 30)
+        '1-26': 'Map2', '1-27': 'Birds', '1-28': 'NumberedCards', '1-29': 'CheckersBoard2', '1-30': 'Shuffleboard',
+        // Weekend 4
+        '1-31': 'WeekendScreen', '2-1': 'WeekendScreen',
+        // Week 5 (Feb 2 - Feb 6)
+        '2-2': 'PiggyBank2', '2-3': 'Fireworks2', '2-4': 'Polaroids', '2-5': 'LicensePlate', '2-6': 'Racing',
+        // Weekend 5
+        '2-7': 'WeekendScreen', '2-8': 'WeekendScreen',
+        // Week 6 (Feb 9 - Feb 13)
+        '2-9': 'PhoneCall', '2-10': 'Tangram', '2-11': 'HouseShuffle', '2-12': 'ToiletStalls', '2-13': 'Hieroglyphics',
+    };
+
+    // --- 2. Core Logic ---
+
+    function loadPuzzleForToday() {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1; // 0-indexed to 1-indexed
+        const currentDay = today.getDate();
+        
+        const dateKey = `${currentMonth}-${currentDay}`;
+        let puzzleName = PUZZLE_SCHEDULE[dateKey];
+        
+        // 1. Handle dates outside the schedule (Before Launch)
+        if (currentYear < 2026 || (currentYear === 2026 && today < new Date('January 5, 2026 00:00:00 EST'))) {
+            puzzleName = 'PromotionScreen';
+        } else if (!puzzleName) {
+            // 2. Handle dates outside the schedule (After Season End)
+            puzzleName = 'SeasonalEnd'; 
+        }
+        
+        const fileName = puzzleName; 
+        
+        // --- 3. Load the Puzzle Content (HTML then JS) ---
+        
+        const gameContainer = document.getElementById('game-container');
+        const htmlFilePath = `games/${fileName}.html`; 
+
+        console.log(`Attempting to load HTML: ${htmlFilePath}`);
+
+        fetch(htmlFilePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`404: HTML file not found at ${htmlFilePath}`);
+                }
+                return response.text();
+            })
+            .then(htmlContent => {
+                // Insert the puzzle's HTML structure
+                gameContainer.innerHTML = htmlContent;
+                
+                // Now load the corresponding JavaScript
+                loadJavaScript(fileName);
+            })
+            .catch(error => {
+                console.error('Error loading puzzle content:', error);
+                gameContainer.innerHTML = `<h1>Error loading today\'s puzzle. Check console for details.</h1>`;
+            });
+    }
+
+    // UPDATED: Loads the core library first, then the game script
+    function loadJavaScript(fileName) {
+        const gameContainer = document.getElementById('game-container');
+        
+        // *** CRITICAL FIX: The correct path to your uploaded CreateJS library ***
+        const cjsLibraryPath = 'assets/createjs.min.js'; 
+        
+        // 1. Load CreateJS/Animate Runtime Library (MUST load first)
+        const cjsScript = document.createElement('script');
+        cjsScript.src = cjsLibraryPath;
+        
+        // 2. Load the specific game JS file *only after* the library is ready
+        cjsScript.onload = () => {
+            const gameScript = document.createElement('script');
+            gameScript.src = `games/${fileName}.js`; 
+            document.body.appendChild(gameScript);
+        };
+
+        // 3. Handle the error if the CreateJS library is missing
+        cjsScript.onerror = () => {
+            gameContainer.innerHTML = `<h1>CRITICAL ERROR: The core animation library (${cjsLibraryPath}) is missing or the path is wrong. Check your /assets folder.</h1>`;
+            console.error(`CRITICAL ERROR: Could not load the CreateJS library from ${cjsLibraryPath}`);
+        };
+
+        document.body.appendChild(cjsScript);
+    }
+
+    // Execute the function when the page loads
+    loadPuzzleForToday();
+  </script>
+</body>
+</html>

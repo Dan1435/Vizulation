@@ -1,99 +1,187 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr"> 
 <head>
   <meta charset="UTF-8">
-  <title>Calculator Puzzle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vizulation - 30 Visual Puzzles, 6 Weeks, Mon-Fri, Mind Tweaks.">
+  <meta name="author" content="DAN">
+  <link rel="icon" href="favicon.ico" type="image/ico">
 
-  <!-- Core library -->
-  <script src="../assets/createjs.min.js"></script>
-  <script src="Calculator.js"></script>
+  <title>Vizulation - 30 Puzzles, 6 Weeks, Mon-Fri, Mind Tweaks</title>
 
   <style>
     body {
+      font-family: 'Zerove', Arial, sans-serif;
       margin: 0;
+      padding: 0;
       background-color: lightblue;
+      overflow-y: auto;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      height: auto;
+    }
+
+    .logo-size {
+      margin-top: 15px;
+      width: 400px;
+      height: 200px;
+    }
+
+    .center {
+      text-align: center;
+      align-items: center;
+      margin-top: -55px;
+    }
+
+    .puzzle-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      width: 100%;
+      padding-top: 20px;
+      box-sizing: border-box;
     }
 
     #animation_container {
       width: 1280px;
       height: 720px;
-      margin: auto;
-      position: relative;
-      border: 8px solid black; /* updated border */
+      margin: 0 auto;
     }
 
-    canvas {
-      position: absolute;
-      display: block;
-      background-color: #ffffff;
+    iframe {
+      border: 8px solid black;
     }
 
-    #dom_overlay_container {
-      pointer-events: none;
-      overflow: hidden;
-      width: 1280px;
-      height: 720px;
-      position: absolute;
-      left: 0;
-      top: 0;
+    @font-face {
+      font-family: 'Zerove';
+      src: url('/fonts/Zerove-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Zerove';
+      src: url('/fonts/Zerove-Italic.ttf') format('truetype');
+      font-weight: normal;
+      font-style: italic;
     }
   </style>
 </head>
 
-<body onload="init();">
-  <div id="animation_container">
-    <canvas id="canvas" width="1280" height="720"></canvas>
-    <div id="dom_overlay_container"></div>
-  </div>
+<body>
+  <header>
+    <nav class="topnav">
+      <div class="center">
+        <a href="index.html">
+          <img src="images/VizulationLogoBlack.png" alt="logo" class="logo-size">
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-content" id="main-content">
+    <!-- Puzzle/Screen will be injected here -->
+  </main>
+
+  <!-- Core library -->
+  <script src="assets/createjs.min.js"></script>
 
   <script>
-    var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+    // Puzzle schedule
+    const puzzleSchedule = {
+      "2026-01-05": "Calculator",
+      "2026-01-06": "Fireworks",
+      "2026-01-07": "Birds2",
+      "2026-01-08": "PhoneCall2",
+      "2026-01-09": "WeightMeasure",
+      "2026-01-12": "PiggyBank",
+      "2026-01-13": "BasketballShooting",
+      "2026-01-14": "3inaRow",
+      "2026-01-15": "Map",
+      "2026-01-16": "NumberedCards2",
+      "2026-01-19": "Fireworks3",
+      "2026-01-20": "Calculator2",
+      "2026-01-21": "PenguinSliding",
+      "2026-01-22": "Racing2",
+      "2026-01-23": "CheckersBoard",
+      "2026-01-26": "Map2",
+      "2026-01-27": "Birds",
+      "2026-01-28": "NumberedCards",
+      "2026-01-29": "CheckersBoard2",
+      "2026-01-30": "Shuffleboard",
+      "2026-02-02": "PiggyBank2",
+      "2026-02-03": "Fireworks2",
+      "2026-02-04": "Polaroids",
+      "2026-02-05": "LicensePlate",
+      "2026-02-06": "Racing",
+      "2026-02-09": "PhoneCall",
+      "2026-02-10": "Tangram",
+      "2026-02-11": "HouseShuffle",
+      "2026-02-12": "ToiletStalls",
+      "2026-02-13": "Hieroglyphics"
+    };
 
-    function init() {
-      canvas = document.getElementById("canvas");
-      anim_container = document.getElementById("animation_container");
-      dom_overlay_container = document.getElementById("dom_overlay_container");
+    const launchDate = new Date("2026-01-05");
+    const endDate = new Date("2026-02-13");
 
-      var comp = AdobeAn.getComposition("YOUR-COMPOSITION-ID"); // replace with ID from Calculator.js
-      var lib = comp.getLibrary();
-      var loader = new createjs.LoadQueue(false);
-      loader.addEventListener("fileload", function(evt){handleFileLoad(evt, comp)});
-      loader.addEventListener("complete", function(evt){handleComplete(evt, comp)});
-      loader.loadManifest(lib.properties.manifest);
+    function getTodayKey() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
     }
 
-    function handleFileLoad(evt, comp) {
-      var images = comp.getImages();
-      if (evt && evt.item.type == "image") { images[evt.item.id] = evt.result; }
-    }
+    function decideScreen() {
+      const today = new Date();
+      const key = getTodayKey();
 
-    function handleComplete(evt, comp) {
-      var lib = comp.getLibrary();
-      var ss = comp.getSpriteSheet();
-      var queue = evt.target;
-      var ssMetadata = lib.ssMetadata;
-      for (var i = 0; i < ssMetadata.length; i++) {
-        ss[ssMetadata[i].name] = new createjs.SpriteSheet({
-          images: [queue.getResult(ssMetadata[i].name)],
-          frames: ssMetadata[i].frames
-        });
+      // For testing now: always load Calculator
+      if (today < launchDate) {
+        return "Calculator";
       }
-      exportRoot = new lib.Calculator(); // root symbol from Calculator.js
-      stage = new lib.Stage(canvas);
-      fnStartAnimation = function() {
-        stage.addChild(exportRoot);
-        createjs.Ticker.framerate = lib.properties.fps;
-        createjs.Ticker.addEventListener("tick", stage);
-      };
-      AdobeAn.makeResponsive(false,'both',false,1,[canvas,anim_container,dom_overlay_container]);
-      AdobeAn.compositionLoaded(lib.properties.id);
-      fnStartAnimation();
+
+      if (puzzleSchedule[key]) return puzzleSchedule[key];
+      if (today > endDate) return "SeasonEnd";
+      return "WeekendScreen";
     }
+
+    function loadScreen() {
+      const screenName = decideScreen();
+      const iframe = document.createElement("iframe");
+      iframe.src = `games/${screenName}.html`;
+      iframe.style.width = "100%";
+      iframe.style.maxWidth = "1280px";
+      iframe.style.height = "720px";
+      iframe.style.border = "8px solid black";
+      iframe.setAttribute("title", screenName);
+      const mount = document.getElementById("main-content");
+      mount.innerHTML = "";
+      mount.appendChild(iframe);
+    }
+
+    function scheduleMidnightReload() {
+      const now = new Date();
+      const millisUntilMidnight =
+        new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+      setTimeout(() => location.reload(), millisUntilMidnight);
+    }
+
+    window.onload = function() {
+      loadScreen();
+      scheduleMidnightReload();
+    };
   </script>
 </body>
 </html>

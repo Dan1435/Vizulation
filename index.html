@@ -52,9 +52,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
       padding-top: 20px;
-      box-sizing: border-box;
+      width: 1280px;
+      height: 800px;
+     border: 8px solid black;
+    box-sizing: content-box;
+      margin: 20px auto;
     }
 
     #animation_container {
@@ -161,18 +164,23 @@
       return "WeekendScreen";
     }
 
-    function loadScreen() {
-      const screenName = decideScreen();
-      const iframe = document.createElement("iframe");
-      iframe.src = `games/${screenName}.html`;
-      iframe.style.width = "100%";
-      iframe.style.maxWidth = "1280px";
-      iframe.style.height = "800px";
-      iframe.setAttribute("title", screenName);
-      const mount = document.getElementById("main-content");
-      mount.innerHTML = "";
-      mount.appendChild(iframe);
-    }
+   function loadScreen() {
+  const screenName = decideScreen();
+  const wrapper = document.createElement("div");
+  wrapper.className = "puzzle-frame";
+
+  const iframe = document.createElement("iframe");
+  iframe.src = `games/${screenName}.html`;
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.setAttribute("title", screenName);
+
+  wrapper.appendChild(iframe);
+
+  const mount = document.getElementById("main-content");
+  mount.innerHTML = "";
+  mount.appendChild(wrapper);
+}
 
     function scheduleMidnightReload() {
       const now = new Date();
@@ -188,6 +196,7 @@
   </script>
 </body>
 </html>
+
 
 
 

@@ -44,10 +44,6 @@
       margin-top: -55px;
     }
 
-    canvas {
-      border: 8px solid black;
-    }
-
     .puzzle-wrapper {
       display: flex;
       justify-content: center;
@@ -167,7 +163,8 @@
       iframe.src = `games/${screenName}.html`;
       iframe.style.width = "100%";
       iframe.style.maxWidth = "1280px";
-      iframe.style.height = "800px";
+      iframe.style.height = "720px";
+      iframe.style.border = "8px solid black";
       iframe.setAttribute("title", screenName);
       const mount = document.getElementById("main-content");
       mount.innerHTML = "";
@@ -188,3 +185,4 @@
   </script>
 </body>
 </html>
+

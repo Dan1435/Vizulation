@@ -147,9 +147,9 @@
       const today = new Date();
       const key = getTodayKey();
 
-      // For testing now: always load Calculator
+      // For testing now: always load CheckersBoard
       if (today < launchDate) {
-        return "Calculator";
+        return "CheckersBoard";
       }
 
       if (puzzleSchedule[key]) return puzzleSchedule[key];

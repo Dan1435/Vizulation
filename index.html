@@ -12,32 +12,30 @@
   </title>
 
   <style>
-     body {
+    body {
       font-family: 'Zerove', Arial, sans-serif;
       margin: 0;
       padding: 0;
-      font-family: 'Arial', sans-serif;
       background-color: lightblue;
       overflow-y: auto;
     }
 
     html {
-      height: auto;
-      overflow-y: hidden: 
+      height: 100%;
     }
 
     main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  height: auto;
-}
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      height: auto;
+    }
 
     .logo-size {
-     margin-top: 15px;
+      margin-top: 15px;
       width: 400px;
       height: 200px;
     }
@@ -48,44 +46,38 @@
       margin-top: -55px;
     }
 
-    
-  canvas {
-  border: 8px solid black;
+    canvas {
+      border: 8px solid black;
     }
 
     .puzzle-wrapper {
       display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding-top: 20px;
-  box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding-top: 20px;
+      box-sizing: border-box;
     }
 
     #animation_container {
-  width: 1280px;
-  height: 720px;
-  margin: 0 auto;
-}
+      width: 1280px;
+      height: 720px;
+      margin: 0 auto;
+    }
 
-.main-content {
-z-index: 
-}
-    
     @font-face {
-  font-family: 'Zerove';
-  src: url('/fonts/Zerove-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+      font-family: 'Zerove';
+      src: url('/fonts/Zerove-Regular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
 
-@font-face {
-  font-family: 'Zerove';
-  src: url('/fonts/Zerove-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
-
+    @font-face {
+      font-family: 'Zerove';
+      src: url('/fonts/Zerove-Italic.ttf') format('truetype');
+      font-weight: normal;
+      font-style: italic;
+    }
   </style>
 </head>
 
@@ -100,141 +92,115 @@ z-index:
     </nav>
   </header>
 
-
-  <main class="main-content">
-    <!-- Puzzle Section -->
-    <section id="puzzle-threeinarow" class="puzzle-wrapper">
-      <div id="animation_container" style="width:1280px; height:720px;">
-        <canvas id="canvas" width="1280" height="720"></canvas>
-        <div id="dom_overlay_container"></div>
-      </div>
-    </section>
+  <main class="main-content" id="main-content">
+    <!-- Puzzle/Screen will be injected here -->
   </main>
 
-  <!-- Core library (local copy) -->
+  <!-- Core library -->
   <script src="assets/createjs.min.js"></script>
-  <!-- Puzzle JS -->
-  <script src="games/ThreeinaRow.js"></script>
 
   <script>
-    // Animate export functions (from ThreeinaRow.html)
-    var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+    // Puzzle schedule
+    const puzzleSchedule = {
+      "2026-01-05": "Calculator",
+      "2026-01-06": "Fireworks",
+      "2026-01-07": "Birds2",
+      "2026-01-08": "PhoneCall2",
+      "2026-01-09": "WeightMeasure",
 
-    function init() {
-      canvas = document.getElementById("canvas");
-      anim_container = document.getElementById("animation_container");
-      dom_overlay_container = document.getElementById("dom_overlay_container");
-      var comp = AdobeAn.getComposition("B543C4DCA9038D4494FB095F47CB2718");
-      var lib = comp.getLibrary();
-      var loader = new createjs.LoadQueue(false);
-      loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
-      loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
-      loader.loadManifest(lib.properties.manifest);
+      "2026-01-12": "PiggyBank",
+      "2026-01-13": "BasketballShooting",
+      "2026-01-14": "3inaRow",
+      "2026-01-15": "Map",
+      "2026-01-16": "NumberedCards2",
+
+      "2026-01-19": "Fireworks3",
+      "2026-01-20": "Calculator2",
+      "2026-01-21": "PenguinSliding",
+      "2026-01-22": "Racing2",
+      "2026-01-23": "CheckersBoard",
+
+      "2026-01-26": "Map2",
+      "2026-01-27": "Birds",
+      "2026-01-28": "NumberedCards",
+      "2026-01-29": "CheckersBoard2",
+      "2026-01-30": "Shuffleboard",
+
+      "2026-02-02": "PiggyBank2",
+      "2026-02-03": "Fireworks2",
+      "2026-02-04": "Polaroids",
+      "2026-02-05": "LicensePlate",
+      "2026-02-06": "Racing",
+
+      "2026-02-09": "PhoneCall",
+      "2026-02-10": "Tangram",
+      "2026-02-11": "HouseShuffle",
+      "2026-02-12": "ToiletStalls",
+      "2026-02-13": "Hieroglyphics"
+    };
+
+    const launchDate = new Date("2026-01-05");
+    const endDate = new Date("2026-02-13");
+
+    // Format date as YYYY-MM-DD
+    function getTodayKey() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
     }
 
-    function handleFileLoad(evt, comp) {
-      var images = comp.getImages();    
-      if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }  
-    }
+    // Decide which screen to load
+    function decideScreen() {
+      const today = new Date();
+      const todayKey = getTodayKey();
 
-    function handleComplete(evt, comp) {
-      var lib = comp.getLibrary();
-      var ss = comp.getSpriteSheet();
-      var queue = evt.target;
-      var ssMetadata = lib.ssMetadata;
-      for (var i=0; i<ssMetadata.length; i++) {
-        ss[ssMetadata[i].name] = new createjs.SpriteSheet({
-          "images": [queue.getResult(ssMetadata[i].name)],
-          "frames": ssMetadata[i].frames
-        });
+      if (today < launchDate) {
+        return "PromotionScreen";
+      } else if (puzzleSchedule[todayKey]) {
+        return puzzleSchedule[todayKey];
+      } else if (today > endDate) {
+        return "SeasonEnd";
+      } else {
+        return "WeekendScreen";
       }
-      exportRoot = new lib.ThreeinaRow();
-      exportRoot.addEventListener("tick", AdobeAn.handleFilterCache);
-      stage = new lib.Stage(canvas);
-      stage.enableMouseOver();
-      fnStartAnimation = function() {
-        stage.addChild(exportRoot);
-        createjs.Ticker.framerate = lib.properties.fps;
-        createjs.Ticker.addEventListener("tick", stage);
+    }
+
+    // Load chosen screen
+    function loadScreen() {
+      const screenName = decideScreen();
+
+      // Inject HTML via iframe (optional)
+      const iframe = document.createElement("iframe");
+      iframe.src = `games/${screenName}.html`;
+      iframe.style.width = "100%";
+      iframe.style.height = "800px";
+      iframe.style.border = "none";
+      document.getElementById("main-content").appendChild(iframe);
+
+      // Load JS
+      const script = document.createElement("script");
+      script.src = `games/${screenName}.js`;
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        console.log(`Loaded ${screenName}`);
       };
-      AdobeAn.makeResponsive(false,'both',false,1,[canvas,anim_container,dom_overlay_container]);   
-      AdobeAn.compositionLoaded(lib.properties.id);
-      fnStartAnimation();
     }
 
-    // Control functions
-    function openThreeinaRow() {
-      document.getElementById('puzzle-threeinarow').style.display = 'block';
-      init();
+    // Auto-refresh at midnight
+    function scheduleMidnightReload() {
+      const now = new Date();
+      const millisUntilMidnight =
+        new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+      setTimeout(() => location.reload(), millisUntilMidnight);
     }
 
-    function closeThreeinaRow() {
-      createjs.Ticker.removeAllEventListeners();
-      if (window.stage) {
-        stage.removeAllChildren();
-        stage.update();
-      }
-      document.getElementById('puzzle-threeinarow').style.display = 'none';
-    }
     window.onload = function() {
-    openThreeinaRow();
-  };
+      loadScreen();
+      scheduleMidnightReload();
+    };
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

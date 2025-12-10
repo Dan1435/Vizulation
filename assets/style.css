@@ -6,4 +6,8 @@ color: #006CC;
 
 border: 3px solid #0066CC;
 border-radius: 5px;
+
+font-family: Arial, sans-serif;
+-webkit-text-size-adjust: 100%;
+ text-size-adjust: 100%;
 }

@@ -59,6 +59,23 @@
       margin: 0 auto;
     }
 
+.puzzle-container iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+    .puzzle-container {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;   
+  margin: 0 auto;
+  aspect-ratio: 16 / 9; 
+  border: 8px solid black;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+    
     iframe {
       border: 8px solid black;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
@@ -162,19 +179,20 @@
       return "WeekendScreen";
     }
 
-    function loadScreen() {
-      const screenName = decideScreen();
-      const iframe = document.createElement("iframe");
-      iframe.src = `games/${screenName}.html`;
-      iframe.style.width = "100%";
-      iframe.style.maxWidth = "1280px";
-      iframe.style.height = "720px";
-      iframe.style.border = "8px solid black";
-      iframe.setAttribute("title", screenName);
-      const mount = document.getElementById("main-content");
-      mount.innerHTML = "";
-      mount.appendChild(iframe);
-    }
+  function loadScreen() {
+  const screenName = decideScreen();
+  const wrapper = document.createElement("div");
+  wrapper.className = "puzzle-container";
+
+  const iframe = document.createElement("iframe");
+  iframe.src = `games/${screenName}.html`;
+  iframe.setAttribute("title", screenName);
+
+  wrapper.appendChild(iframe);
+  const mount = document.getElementById("main-content");
+  mount.innerHTML = "";
+  mount.appendChild(wrapper);
+}
 
     function scheduleMidnightReload() {
       const now = new Date();
@@ -190,6 +208,7 @@
   </script>
 </body>
 </html>
+
 
 
 

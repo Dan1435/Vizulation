@@ -99,108 +99,89 @@
   <!-- Core library -->
   <script src="assets/createjs.min.js"></script>
 
-  <script>
-    // Puzzle schedule
-    const puzzleSchedule = {
-      "2026-01-05": "Calculator",
-      "2026-01-06": "Fireworks",
-      "2026-01-07": "Birds2",
-      "2026-01-08": "PhoneCall2",
-      "2026-01-09": "WeightMeasure",
+ <main class="main-content" id="main-content"></main>
 
-      "2026-01-12": "PiggyBank",
-      "2026-01-13": "BasketballShooting",
-      "2026-01-14": "3inaRow",
-      "2026-01-15": "Map",
-      "2026-01-16": "NumberedCards2",
+<script>
+  const puzzleSchedule = {
+    "2026-01-05": "Calculator",
+    "2026-01-06": "Fireworks",
+    "2026-01-07": "Birds2",
+    "2026-01-08": "PhoneCall2",
+    "2026-01-09": "WeightMeasure",
+    "2026-01-12": "PiggyBank",
+    "2026-01-13": "BasketballShooting",
+    "2026-01-14": "3inaRow",
+    "2026-01-15": "Map",
+    "2026-01-16": "NumberedCards2",
+    "2026-01-19": "Fireworks3",
+    "2026-01-20": "Calculator2",
+    "2026-01-21": "PenguinSliding",
+    "2026-01-22": "Racing2",
+    "2026-01-23": "CheckersBoard",
+    "2026-01-26": "Map2",
+    "2026-01-27": "Birds",
+    "2026-01-28": "NumberedCards",
+    "2026-01-29": "CheckersBoard2",
+    "2026-01-30": "Shuffleboard",
+    "2026-02-02": "PiggyBank2",
+    "2026-02-03": "Fireworks2",
+    "2026-02-04": "Polaroids",
+    "2026-02-05": "LicensePlate",
+    "2026-02-06": "Racing",
+    "2026-02-09": "PhoneCall",
+    "2026-02-10": "Tangram",
+    "2026-02-11": "HouseShuffle",
+    "2026-02-12": "ToiletStalls",
+    "2026-02-13": "Hieroglyphics"
+  };
 
-      "2026-01-19": "Fireworks3",
-      "2026-01-20": "Calculator2",
-      "2026-01-21": "PenguinSliding",
-      "2026-01-22": "Racing2",
-      "2026-01-23": "CheckersBoard",
+  const launchDate = new Date("2026-01-05");
+  const endDate = new Date("2026-02-13");
 
-      "2026-01-26": "Map2",
-      "2026-01-27": "Birds",
-      "2026-01-28": "NumberedCards",
-      "2026-01-29": "CheckersBoard2",
-      "2026-01-30": "Shuffleboard",
+  function getTodayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
-      "2026-02-02": "PiggyBank2",
-      "2026-02-03": "Fireworks2",
-      "2026-02-04": "Polaroids",
-      "2026-02-05": "LicensePlate",
-      "2026-02-06": "Racing",
+  function decideScreen() {
+    const today = new Date();
+    const key = getTodayKey();
 
-      "2026-02-09": "PhoneCall",
-      "2026-02-10": "Tangram",
-      "2026-02-11": "HouseShuffle",
-      "2026-02-12": "ToiletStalls",
-      "2026-02-13": "Hieroglyphics"
-    };
+    if (today < launchDate) return "PromotionScreen";
+    if (puzzleSchedule[key]) return puzzleSchedule[key];
+    if (today > endDate) return "SeasonEnd";
+    return "WeekendScreen";
+  }
 
-    const launchDate = new Date("2026-01-05");
-    const endDate = new Date("2026-02-13");
+  function loadScreen() {
+    const screenName = decideScreen();
+    const iframe = document.createElement("iframe");
+    iframe.src = `games/${screenName}.html`;
+    iframe.style.width = "100%";
+    iframe.style.maxWidth = "1280px";   // keep nice width on large screens
+    iframe.style.height = "800px";      // or set to 720px if that’s your canvas height
+    iframe.style.border = "none";
+    iframe.setAttribute("title", screenName);
+    const mount = document.getElementById("main-content");
+    mount.innerHTML = "";
+    mount.appendChild(iframe);
+  }
 
-    // Format date as YYYY-MM-DD
-    function getTodayKey() {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, '0');
-      const dd = String(today.getDate()).padStart(2, '0');
-      return `${yyyy}-${mm}-${dd}`;
-    }
+  function scheduleMidnightReload() {
+    const now = new Date();
+    const millisUntilMidnight =
+      new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
+    setTimeout(() => location.reload(), millisUntilMidnight);
+  }
 
-    // Decide which screen to load
-    function decideScreen() {
-      const today = new Date();
-      const todayKey = getTodayKey();
-
-      if (today < launchDate) {
-        return "PromotionScreen";
-      } else if (puzzleSchedule[todayKey]) {
-        return puzzleSchedule[todayKey];
-      } else if (today > endDate) {
-        return "SeasonEnd";
-      } else {
-        return "WeekendScreen";
-      }
-    }
-
-    // Load chosen screen
-    function loadScreen() {
-      const screenName = decideScreen();
-
-      // Inject HTML via iframe (optional)
-      const iframe = document.createElement("iframe");
-      iframe.src = `games/${screenName}.html`;
-      iframe.style.width = "100%";
-      iframe.style.height = "800px";
-      iframe.style.border = "none";
-      document.getElementById("main-content").appendChild(iframe);
-
-      // Load JS
-      const script = document.createElement("script");
-      script.src = `games/${screenName}.js`;
-      document.body.appendChild(script);
-
-      script.onload = () => {
-        console.log(`Loaded ${screenName}`);
-      };
-    }
-
-    // Auto-refresh at midnight
-    function scheduleMidnightReload() {
-      const now = new Date();
-      const millisUntilMidnight =
-        new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getTime() - now.getTime();
-      setTimeout(() => location.reload(), millisUntilMidnight);
-    }
-
-    window.onload = function() {
-      loadScreen();
-      scheduleMidnightReload();
-    };
-  </script>
+  window.onload = function() {
+    loadScreen();
+    scheduleMidnightReload();
+  };
+</script>
 </body>
 </html>
+

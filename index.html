@@ -165,19 +165,19 @@
       return `${y}-${m}-${day}`;
     }
 
-    function decideScreen() {
-      const today = new Date();
-      const key = getTodayKey();
+function decideScreen() {
+  const today = new Date();
+  const key = getTodayKey();
 
-      // For testing now: always load Calculator
-      if (today < launchDate) {
-        return "Calculator";
-      }
+  // For testing now: always load 3inaRow
+  if (today < launchDate) {
+    return "3inaRow";
+  }
 
-      if (puzzleSchedule[key]) return puzzleSchedule[key];
-      if (today > endDate) return "SeasonEnd";
-      return "WeekendScreen";
-    }
+  if (puzzleSchedule[key]) return puzzleSchedule[key];
+  if (today > endDate) return "SeasonEnd";
+  return "WeekendScreen";
+}
 
   function loadScreen() {
   const screenName = decideScreen();
@@ -208,6 +208,7 @@
   </script>
 </body>
 </html>
+
 
 
 

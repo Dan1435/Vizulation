@@ -109,10 +109,8 @@
   </header>
 
   <main class="main-content" id="main-content">
-    <!-- Puzzle/Screen will be injected here -->
   </main>
 
-  <!-- Core library -->
   <script src="assets/createjs.min.js"></script>
 
   <script>
@@ -165,7 +163,6 @@ function decideScreen() {
   const today = new Date();
   const key = getTodayKey();
 
-  // For testing now: always load BasketballShooting
   if (today < launchDate) {
     return "CheckersBoard";
   }
@@ -204,6 +201,7 @@ function decideScreen() {
   </script>
 </body>
 </html>
+
 
 
 

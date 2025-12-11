@@ -165,9 +165,9 @@ function decideScreen() {
   const today = new Date();
   const key = getTodayKey();
 
-  // For testing now: always load 3inaRow
+  // For testing now: always load BasketballShooting
   if (today < launchDate) {
-    return "3inaRow";
+    return "BasketballShooting";
   }
 
   if (puzzleSchedule[key]) return puzzleSchedule[key];
@@ -204,6 +204,7 @@ function decideScreen() {
   </script>
 </body>
 </html>
+
 
 
 

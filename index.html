@@ -148,13 +148,13 @@
 
     
       if (today < launchDate) {
-        return "SeasonEnd";
+        return "SeasonalEnd";
       }
 
 
       if (puzzleSchedule[key]) return puzzleSchedule[key];
 
-      if (today > endDate) return "SeasonEnd";
+      if (today > endDate) return "SeasonalEnd";
 
       
       return "WeekendScreen";
@@ -189,6 +189,7 @@
   </script>
 </body>
 </html>
+
 
 
 

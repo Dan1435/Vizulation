@@ -1,130 +1,120 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="authoring-tool" content="Adobe_Animate_CC">
-<title>Calculatortest</title>
+  <meta charset="UTF-8">
+  <meta name="authoring-tool" content="Adobe_Animate_CC">
+  <title>Calculatortest</title>
 
-<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
-<script src="Calculatortest.js"></script>
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+  <script src="Calculatortest.js"></script>
 
-<style>
- #animation_container {
-  width: 1280px;
-  height: 720px;
-  margin: 0 auto;
-  position: relative;
-}
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* ✅ Removes scrollbars */
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+    }
 
-canvas {
-  width: 1280px;
-  height: 720px;
-  display: block;
-}
+    #animation_container {
+      width: 1280px;
+      height: 720px;
+      margin: 0 auto;
+      position: relative;
+    }
 
-/* Mobile portrait: shrink to fit */
-@media (max-width: 768px) and (orientation: portrait) {
-  #animation_container {
-    width: 90vw;
-    height: calc(90vw * 0.5625); /* 16:9 */
-  }
+    canvas {
+      width: 1280px;
+      height: 720px;
+      display: block;
+    }
 
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
+    #dom_overlay_container {
+      pointer-events: none;
+      overflow: hidden;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1280px;
+      height: 720px;
+    }
 
-  #dom_overlay_container {
-    width: 100% !important;
-    height: 100% !important;
-  }
-</style>
+    /* ✅ Mobile portrait: shrink to fit */
+    @media (max-width: 768px) and (orientation: portrait) {
+      #animation_container {
+        width: 90vw;
+        height: calc(90vw * 0.5625); /* 16:9 */
+      }
 
-<script>
-var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
 
-function init() {
-  canvas = document.getElementById("canvas");
-  anim_container = document.getElementById("animation_container");
-  dom_overlay_container = document.getElementById("dom_overlay_container");
+      #dom_overlay_container {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+  </style>
 
-  var comp = AdobeAn.getComposition("B543C4DCA9038D4494FB095F47CB2718");
-  var lib = comp.getLibrary();
-  var loader = new createjs.LoadQueue(false);
+  <script>
+    var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
 
-  loader.addEventListener("fileload", function(evt){ handleFileLoad(evt, comp) });
-  loader.addEventListener("complete", function(evt){ handleComplete(evt, comp) });
+    function init() {
+      canvas = document.getElementById("canvas");
+      anim_container = document.getElementById("animation_container");
+      dom_overlay_container = document.getElementById("dom_overlay_container");
 
-  loader.loadManifest(lib.properties.manifest);
-}
+      var comp = AdobeAn.getComposition("B543C4DCA9038D4494FB095F47CB2718");
+      var lib = comp.getLibrary();
+      var loader = new createjs.LoadQueue(false);
 
-function handleFileLoad(evt, comp) {
-  var images = comp.getImages();
-  if (evt && evt.item.type === "image") {
-    images[evt.item.id] = evt.result;
-  }
-}
+      loader.addEventListener("fileload", function(evt){ handleFileLoad(evt, comp) });
+      loader.addEventListener("complete", function(evt){ handleComplete(evt, comp) });
 
-function handleComplete(evt, comp) {
-  var lib = comp.getLibrary();
-  var ss = comp.getSpriteSheet();
-  var queue = evt.target;
-  var ssMetadata = lib.ssMetadata;
+      loader.loadManifest(lib.properties.manifest);
+    }
 
-  for (var i = 0; i < ssMetadata.length; i++) {
-    ss[ssMetadata[i].name] = new createjs.SpriteSheet({
-      images: [queue.getResult(ssMetadata[i].name)],
-      frames: ssMetadata[i].frames
-    });
-  }
+    function handleFileLoad(evt, comp) {
+      var images = comp.getImages();
+      if (evt && evt.item.type === "image") {
+        images[evt.item.id] = evt.result;
+      }
+    }
 
-  exportRoot = new lib.Calculatortest();
-  exportRoot.addEventListener("tick", AdobeAn.handleFilterCache);
+    function handleComplete(evt, comp) {
+      var lib = comp.getLibrary();
+      var ss = comp.getSpriteSheet();
+      var queue = evt.target;
+      var ssMetadata = lib.ssMetadata;
 
-  stage = new lib.Stage(canvas);
-  stage.enableMouseOver();
+      for (var i = 0; i < ssMetadata.length; i++) {
+        ss[ssMetadata[i].name] = new createjs.SpriteSheet({
+          images: [queue.getResult(ssMetadata[i].name)],
+          frames: ssMetadata[i].frames
+        });
+      }
 
-  fnStartAnimation = function() {
-    stage.addChild(exportRoot);
-    createjs.Ticker.framerate = lib.properties.fps;
-    createjs.Ticker.addEventListener("tick", stage);
-  };
+      exportRoot = new lib.Calculatortest();
+      exportRoot.addEventListener("tick", AdobeAn.handleFilterCache);
 
-AdobeAn.makeResponsive(true,'both',false,1,[canvas,anim_container,dom_overlay_container]);
-  AdobeAn.compositionLoaded(lib.properties.id);
-  fnStartAnimation();
-  canvas.style.width = "1280px";
-canvas.style.height = "720px";
- function resizeCanvas() {
-  const container = document.getElementById("animation_container");
-  const w = 1280;
-  const h = 720;
-  const iw = window.innerWidth;
-  const ih = window.innerHeight;
+      stage = new lib.Stage(canvas);
+      stage.enableMouseOver();
 
-  // Desktop: keep original size
-  if (iw > 1280) {
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
-    container.style.width = w + "px";
-    container.style.height = h + "px";
-    return;
-  }
+      fnStartAnimation = function() {
+        stage.addChild(exportRoot);
+        createjs.Ticker.framerate = lib.properties.fps;
+        createjs.Ticker.addEventListener("tick", stage);
+      };
 
-  // Mobile: scale down proportionally
-  const scale = Math.min(iw / w, ih / h);
-
-  canvas.style.width = (w * scale) + "px";
-  canvas.style.height = (h * scale) + "px";
-  container.style.width = (w * scale) + "px";
-  container.style.height = (h * scale) + "px";
-}
-
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-}
-</script>
-
+      AdobeAn.makeResponsive(true, 'both', false, 1, [canvas]);
+      AdobeAn.compositionLoaded(lib.properties.id);
+      fnStartAnimation();
+    }
+  </script>
 </head>
 
 <body onload="init();">
@@ -134,6 +124,3 @@ resizeCanvas();
   </div>
 </body>
 </html>
-
-
-

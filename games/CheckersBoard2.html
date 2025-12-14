@@ -56,12 +56,7 @@
       margin: 0 auto;
     }
 
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
-    #dom_overlay_container {
+    canvas, #dom_overlay_container {
       width: 100% !important;
       height: 100% !important;
     }
@@ -80,8 +75,8 @@ function init() {
   var lib = comp.getLibrary();
   var loader = new createjs.LoadQueue(false);
 
-  loader.addEventListener("fileload", function(evt){ handleFileLoad(evt, comp) });
-  loader.addEventListener("complete", function(evt){ handleComplete(evt, comp) });
+  loader.addEventListener("fileload", evt => handleFileLoad(evt, comp));
+  loader.addEventListener("complete", evt => handleComplete(evt, comp));
 
   loader.loadManifest(lib.properties.manifest);
 }
@@ -97,14 +92,13 @@ function handleComplete(evt, comp) {
   var lib = comp.getLibrary();
   var ss = comp.getSpriteSheet();
   var queue = evt.target;
-  var ssMetadata = lib.ssMetadata;
 
-  for (var i = 0; i < ssMetadata.length; i++) {
-    ss[ssMetadata[i].name] = new createjs.SpriteSheet({
-      images: [queue.getResult(ssMetadata[i].name)],
-      frames: ssMetadata[i].frames
+  lib.ssMetadata.forEach(meta => {
+    ss[meta.name] = new createjs.SpriteSheet({
+      images: [queue.getResult(meta.name)],
+      frames: meta.frames
     });
-  }
+  });
 
   exportRoot = new lib.CheckersBoard2();
   exportRoot.addEventListener("tick", AdobeAn.handleFilterCache);
@@ -112,7 +106,7 @@ function handleComplete(evt, comp) {
   stage = new lib.Stage(canvas);
   stage.enableMouseOver();
 
-  fnStartAnimation = function() {
+  fnStartAnimation = () => {
     stage.addChild(exportRoot);
     createjs.Ticker.framerate = lib.properties.fps;
     createjs.Ticker.addEventListener("tick", stage);
@@ -132,4 +126,3 @@ function handleComplete(evt, comp) {
   </div>
 </body>
 </html>
-

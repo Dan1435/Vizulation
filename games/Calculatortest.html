@@ -95,6 +95,33 @@ AdobeAn.makeResponsive(true,'both',false,1,[canvas,anim_container,dom_overlay_co
   fnStartAnimation();
   canvas.style.width = "1280px";
 canvas.style.height = "720px";
+ function resizeCanvas() {
+  const container = document.getElementById("animation_container");
+  const w = 1280;
+  const h = 720;
+  const iw = window.innerWidth;
+  const ih = window.innerHeight;
+
+  // Desktop: keep original size
+  if (iw > 1280) {
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    container.style.width = w + "px";
+    container.style.height = h + "px";
+    return;
+  }
+
+  // Mobile: scale down proportionally
+  const scale = Math.min(iw / w, ih / h);
+
+  canvas.style.width = (w * scale) + "px";
+  canvas.style.height = (h * scale) + "px";
+  container.style.width = (w * scale) + "px";
+  container.style.height = (h * scale) + "px";
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 }
 </script>
 
@@ -107,5 +134,6 @@ canvas.style.height = "720px";
   </div>
 </body>
 </html>
+
 
 

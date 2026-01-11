@@ -244,6 +244,9 @@
 
 <footer>
 <div class="foot">
+  <a href="javascript:void(0)" onclick="copyLink()" title="Copy Link">
+      <img src="images/sharelogo.png" alt="Copy Link">
+    </a>
 <a href="mailto:contact@vizulation.com"><img src="images/email.png" alt="Email"></a>
 <a href="https://www.instagram.com/vizulation2026/" target="_blank"><img src="images/instagram.png" alt="Instagram"></a>
 <a href="https://www.tiktok.com/@vizulation2026" target="_blank"><img src="images/tiktok.png" alt="Tiktok"></a>
@@ -253,8 +256,21 @@
 </a>
 </div>
 </footer>
+  <script>
+  function copyLink() {
+    // Replace with the link you want people to copy
+    const url = "https://vizulation.com"; 
+    
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Link copied to clipboard!");
+    }).catch(err => {
+      console.error("Could not copy text: ", err);
+    });
+  }
+</script>
 </body>
 </html>
+
 
 
 

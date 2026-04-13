@@ -4,29 +4,43 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity Web Player | BrightenUp</title>
+    <style>
+      /* Ensure the browser knows the page should take up the full screen */
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* This removes the scrollbars */
+        background-color: #231F20;
+      }
+
+      /* Force the Unity Canvas to fill its container (the iframe) */
+      #unity-canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block; /* Removes the mysterious gap at the bottom */
+      }
+    </style>
   </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <canvas id="unity-canvas" width=360 height=640 tabindex="-1" style="width: 360px; height: 640px; background: #231F20"></canvas>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+
     <script src="Build/build22.loader.js"></script>
     <script>
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
 
         var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
-
-        document.body.style.textAlign = "left";
-
+        canvas.style.position = "fixed"; 
       }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
+        /* Updated all paths to build22 */
         dataUrl: "Build/build22.data.unityweb",
         frameworkUrl: "Build/build22.framework.js.unityweb",
         codeUrl: "Build/build22.wasm.unityweb",
@@ -34,11 +48,11 @@
         companyName: "VizulationGames",
         productName: "BrightenUp",
         productVersion: "1.0",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+        devicePixelRatio: window.devicePixelRatio || 1, 
       }).then((unityInstance) => {
+        console.log("BrightenUp build22 successfully initialized!");
       }).catch((message) => {
-        alert(message);
+        console.error("Unity Load Error:", message);
       });
     </script>
   </body>

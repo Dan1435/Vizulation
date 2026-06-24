@@ -174,45 +174,43 @@
   <script src="assets/createjs.min.js"></script>
 
   <script>
+    // FIXED: Removed broken nested brackets
     const puzzleSchedule = { 
-{
- {
-  "2026-06-22": "Calculator2",
-  "2026-06-23": "PenguinSliding",
-  "2026-06-24": "Racing2",
-  "2026-06-25": "CheckersBoard",
-  "2026-06-26": "Map2",
-  "2026-06-29": "Birds",
-  "2026-06-30": "NumberedCards",
-  "2026-07-01": "CheckersBoard2",
-  "2026-07-02": "Shuffleboard",
-  "2026-07-03": "PiggyBank2",
-  "2026-07-06": "Fireworks3",
-  "2026-07-07": "Fireworks2",
-  "2026-07-08": "Polaroids",
-  "2026-07-09": "LicensePlate",
-  "2026-07-10": "Racing",
-  "2026-07-13": "PhoneCall",
-  "2026-07-14": "Tangram",
-  "2026-07-15": "HouseShuffle",
-  "2026-07-16": "ToiletStalls",
-  "2026-07-17": "Hieroglyphics",
-  "2026-07-20": "Calculator",
-  "2026-07-21": "Fireworks",
-  "2026-07-22": "Birds2",
-  "2026-07-23": "PhoneCall2",
-  "2026-07-24": "WeightMeasure",
-  "2026-07-27": "PiggyBank",
-  "2026-07-28": "BasketballShooting",
-  "2026-07-29": "3inaRow",
-  "2026-07-30": "Map",
-  "2026-07-31": "NumberedCards2"
-}
-}
+      "2026-06-22": "Calculator2",
+      "2026-06-23": "PenguinSliding",
+      "2026-06-24": "Racing2",
+      "2026-06-25": "CheckersBoard",
+      "2026-06-26": "Map2",
+      "2026-06-29": "Birds",
+      "2026-06-30": "NumberedCards",
+      "2026-07-01": "CheckersBoard2",
+      "2026-07-02": "Shuffleboard",
+      "2026-07-03": "PiggyBank2",
+      "2026-07-06": "Fireworks3",
+      "2026-07-07": "Fireworks2",
+      "2026-07-08": "Polaroids",
+      "2026-07-09": "LicensePlate",
+      "2026-07-10": "Racing",
+      "2026-07-13": "PhoneCall",
+      "2026-07-14": "Tangram",
+      "2026-07-15": "HouseShuffle",
+      "2026-07-16": "ToiletStalls",
+      "2026-07-17": "Hieroglyphics",
+      "2026-07-20": "Calculator",
+      "2026-07-21": "Fireworks",
+      "2026-07-22": "Birds2",
+      "2026-07-23": "PhoneCall2",
+      "2026-07-24": "WeightMeasure",
+      "2026-07-27": "PiggyBank",
+      "2026-07-28": "BasketballShooting",
+      "2026-07-29": "3inaRow",
+      "2026-07-30": "Map",
+      "2026-07-31": "NumberedCards2"
     };
 
-    const launchDate = new Date(2026, 2, 2); 
-    const endDate = new Date(2026, 3, 10);
+    // FIXED: Months are 0-indexed in JS. June is 5, July is 6.
+    const launchDate = new Date(2026, 5, 22); 
+    const endDate = new Date(2026, 6, 31);
 
     function getTodayKey() {
       const d = new Date();
